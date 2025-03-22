@@ -60,7 +60,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-baenv-
       - name: Download AssetBundles from server
-        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           chmod +x ./download.sh
           ./download.sh
