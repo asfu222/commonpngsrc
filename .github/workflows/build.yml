@@ -85,6 +85,6 @@ jobs:
             echo "没有检测到更新，跳过提交"
           else
             echo "检测到筛选设置更新，正在更新..."
-            git commit -m "更新筛选设置"
+            git commit -m "更新筛选设置 [skip ci]"
             git push origin
           fi
