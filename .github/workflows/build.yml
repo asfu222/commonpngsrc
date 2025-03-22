@@ -56,7 +56,7 @@ jobs:
         with:
           path: |
             AssetBundles/
-          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env', 'download.sh') }}
+          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}-${{ hashFiles('download.sh') }}
           restore-keys: |
             ${{ runner.os }}-baenv-
       - name: Download AssetBundles from server
