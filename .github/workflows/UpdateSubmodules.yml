@@ -17,7 +17,7 @@ jobs:
       with:
         submodules: true
         fetch-depth: 1
-        token: ${{ secrets.RSS_REPO_TOKEN }}
+        token: ${{ secrets.ASSET_REPO_TOKEN }}
 
     - name: Check for updates in submodules' main branch
       run: |
