@@ -73,9 +73,9 @@ found_prefixes = []
 filtered_types = filter_config["filtered_types"]
 def applyMod(input_path: Path, output_path: Path) -> None:
     used_paths = []
-    names = os.listdir(input_path)
-    names = [name for name in names if any(typename in name for typename in filtered_types)]
-    filtered_names = [name for name in names if get_prefix(name) in filtered_prefixes] if filter_config["enabled"] else names
+    filtered_names = names = os.listdir(input_path)
+    #names = [name for name in names if any(typename in name for typename in filtered_types)]
+    #filtered_names = [name for name in names if get_prefix(name) in filtered_prefixes] if filter_config["enabled"] else names
     for filename in filtered_names:
         fpath = os.path.join(input_path, filename)
         env = UnityPy.load(fpath)
@@ -103,8 +103,10 @@ def applyMod(input_path: Path, output_path: Path) -> None:
             f.write(f"UNUSED ASSETS WARNING:\n{json.dumps(unused_paths, indent=4)}\n")
 applyMod(ANDROID_IN, ANDROID_OUT)
 applyMod(IOS_IN, IOS_OUT)
+'''
 if not filter_config["enabled"]:
     filter_config["filter_prefixes"] = list(set(found_prefixes))
     filter_config["enabled"] = True
     with open("filter-config.json", "wb") as f_cfg:
         f_cfg.write(json.dumps(filtered_prefixes, indent=4, ensure_ascii=False))
+'''
