@@ -63,9 +63,17 @@ def set_image(texture, imagebytes):
     
     print("not ASTC, continue")
     texture.set_image(imagebytes)
+def get_prefix(name):
+    last_index = name.rfind('_')
+    return name[:last_index] if last_index != -1 else name
+with open("filter-config.json", "r", encoding="utf8") as f_cfg:
+    filter_config = json.loads(f_cfg.read())
+filtered_prefixes = filter_config["filter_prefixes"]
+found_prefixes = []
 def applyMod(input_path: Path, output_path: Path) -> None:
     used_paths = []
-    for filename in os.listdir(input_path):
+    filtered_names = [name for name in os.listdir(input_path) if get_prefix(name) in filtered_prefixes] if filter_config["enabled"] else os.listdir(input_path)
+    for filename in filtered_names:
         fpath = os.path.join(input_path, filename)
         env = UnityPy.load(fpath)
         has_modded = False
@@ -83,6 +91,7 @@ def applyMod(input_path: Path, output_path: Path) -> None:
             print(f"Modifying {filename}")
             with open(output_path / filename, "wb") as f:
                 f.write(env.file.save(packer = "original"))
+            found_prefixes.append(get_prefix(filename))
             
     unused_paths = [str(upath) for upath in set(modded_assets.values()) - set(used_paths)]
     if len(unused_paths) > 0:
@@ -91,3 +100,8 @@ def applyMod(input_path: Path, output_path: Path) -> None:
             f.write(f"UNUSED ASSETS WARNING:\n{json.dumps(unused_paths, indent=4)}\n")
 applyMod(ANDROID_IN, ANDROID_OUT)
 applyMod(IOS_IN, IOS_OUT)
+if not filter_config["enabled"]:
+    filter_config["filter_prefixes"] = found_prefixes
+    filter_config["enabled"] = True
+    with open("filter-config.json", "wb") as f_cfg:
+        f_cfg.write(json.dumps(filtered_prefixes, indent=4, ensure_ascii=False))
