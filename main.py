@@ -104,7 +104,7 @@ def applyMod(input_path: Path, output_path: Path) -> None:
 applyMod(ANDROID_IN, ANDROID_OUT)
 applyMod(IOS_IN, IOS_OUT)
 if not filter_config["enabled"]:
-    filter_config["filter_prefixes"] = set(found_prefixes)
+    filter_config["filter_prefixes"] = list(set(found_prefixes))
     filter_config["enabled"] = True
     with open("filter-config.json", "wb") as f_cfg:
         f_cfg.write(json.dumps(filtered_prefixes, indent=4, ensure_ascii=False))
