@@ -124,7 +124,7 @@ def main():
     all_used = android_used + ios_used
 
     all_modded_paths = [asset['path'] for asset in modded_assets.values()]
-    unused_paths = list(set(all_modded_paths) - set(all_used))
+    unused_paths = [str(fpath).replace("\\", "/") for fpath in list(set(all_modded_paths) - set(all_used))]
     
     if unused_paths:
         print(f"Warning: {len(unused_paths)} unused modded assets.")
