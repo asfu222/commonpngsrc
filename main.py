@@ -21,7 +21,7 @@ ASSETS_IN = Path("commonpngassets")
 
 ANDROID_OUT.mkdir(exist_ok=True, parents=True)
 IOS_OUT.mkdir(exist_ok=True, parents=True)
-IMAGE_TYPES = ["png", "jpg"]
+IMAGE_TYPES = [".png", ".jpg"]
 # Preload modded assets into memory and map filepaths
 modded_assets = {}
 for filepath in ASSETS_IN.rglob("*"):
@@ -103,6 +103,7 @@ def process_single_file(args):
             used.append(asset['path'])
             has_modded = True
     if has_modded:
+        print(f"modding {filename}")
         output_path = os.path.join(output_dir, filename)
         with open(output_path, "wb") as f:
             f.write(env.file.save(packer="original"))
