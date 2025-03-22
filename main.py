@@ -62,7 +62,7 @@ def set_image(texture, imagebytes):
         return
     
     print("not ASTC, continue")
-    texture.set_image(imagebytes)
+    texture.set_image(pad_to_multiple_of_4(imagebytes))
 def get_prefix(name):
     last_index = name.rfind('_')
     return name[:last_index] if last_index != -1 else name
