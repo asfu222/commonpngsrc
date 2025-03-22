@@ -68,11 +68,12 @@ def get_prefix(name):
     return name[:last_index] if last_index != -1 else name
 with open("filter-config.json", "r", encoding="utf8") as f_cfg:
     filter_config = json.loads(f_cfg.read())
-filtered_prefixes = filter_config["filter_prefixes"]
+filtered_prefixes = set(filter_config["filter_prefixes"])
 found_prefixes = []
+filtered_types = filter_config("filtered_types")
 def applyMod(input_path: Path, output_path: Path) -> None:
     used_paths = []
-    filtered_names = [name for name in os.listdir(input_path) if get_prefix(name) in filtered_prefixes] if filter_config["enabled"] else os.listdir(input_path)
+    filtered_names = [name for name in os.listdir(input_path) if any(typename in name for typename in filtered_types) and get_prefix(name) in filtered_prefixes] if filter_config["enabled"] else os.listdir(input_path)
     for filename in filtered_names:
         fpath = os.path.join(input_path, filename)
         env = UnityPy.load(fpath)
@@ -101,7 +102,7 @@ def applyMod(input_path: Path, output_path: Path) -> None:
 applyMod(ANDROID_IN, ANDROID_OUT)
 applyMod(IOS_IN, IOS_OUT)
 if not filter_config["enabled"]:
-    filter_config["filter_prefixes"] = found_prefixes
+    filter_config["filter_prefixes"] = set(found_prefixes)
     filter_config["enabled"] = True
     with open("filter-config.json", "wb") as f_cfg:
         f_cfg.write(json.dumps(filtered_prefixes, indent=4, ensure_ascii=False))

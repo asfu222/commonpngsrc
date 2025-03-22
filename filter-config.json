@@ -1,4 +1,5 @@
 {
 	"enabled": false,
+	"filtered_types": ["png_asset", "psd_asset", "tga_asset"],
 	"filter_prefixes": []
 }

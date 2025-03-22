@@ -59,11 +59,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-baenv-
       - name: Download AssetBundles from server
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          baad download --androidassets --iosassets --output AssetBundles
-          baad download --androidassets --iosassets --output AssetBundles
-          baad download --androidassets --iosassets --output AssetBundles # In case of failure in one of the attempts, try multiple times
+            for filter in "png_asset" "psd_asset" "tga_asset"
+            do
+              for attempt in {1..3}
+              do
+                echo "Attempting to download assets with filter: $filter (Attempt $attempt/3)"
+                baad download --androidassets --iosassets --output AssetBundles --filter "$filter"
+              done
+            done
       - name: Update AssetBundles
+        continue-on-error: true
         env:
           TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
         run: |
