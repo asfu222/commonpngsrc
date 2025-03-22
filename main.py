@@ -70,7 +70,7 @@ with open("filter-config.json", "r", encoding="utf8") as f_cfg:
     filter_config = json.loads(f_cfg.read())
 filtered_prefixes = set(filter_config["filter_prefixes"])
 found_prefixes = []
-filtered_types = filter_config("filtered_types")
+filtered_types = filter_config["filtered_types"]
 def applyMod(input_path: Path, output_path: Path) -> None:
     used_paths = []
     filtered_names = [name for name in os.listdir(input_path) if any(typename in name for typename in filtered_types) and get_prefix(name) in filtered_prefixes] if filter_config["enabled"] else os.listdir(input_path)
