@@ -3,6 +3,7 @@ if [ -d "AssetBundles" ]; then
   echo "AssetBundles directory already exists, skipping download."
 else
   echo "AssetBundles directory not found, downloading..."
+  pip install git+https://github.com/asfu222/BA-AD
 	for filter in "png_asset" "psd_asset" "tga_asset"
 	do
 	  for attempt in {1..3}
