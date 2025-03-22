@@ -95,7 +95,6 @@ def process_single_file(args):
             continue
         data = obj.read()
         key = data.m_Name.lower()
-        print(f"modding {key}")
         if key in modded_assets:
             asset = modded_assets[key]
             img = Image.frombytes("RGBA", asset['size'], asset['bytes'])
