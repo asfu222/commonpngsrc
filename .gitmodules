@@ -1,0 +1,4 @@
+[submodule "commonpngassets"]
+	path = commonpngassets
+	url = https://github.com/asfu222/commonpngassets.git
+	branch = main

@@ -1,0 +1,78 @@
+name: Update commonpng 
+
+on:
+  push:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [update-assets]
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.ASSET_REPO_TOKEN }}
+      - name: Configure Submodules to Track Branches
+        run: |
+          git submodule foreach '
+            git checkout main || git checkout -b main
+            git branch --set-upstream-to=origin/main main
+          '
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+      - name: Update Submodule References
+        run: |
+          submodule_paths=$(git submodule status | awk '{ print $2 }')
+          for submodule in $submodule_paths; do
+            git add $submodule
+          done
+          if git diff --cached --quiet; then
+            echo "子模块已是最新状态"
+          else
+            git commit -m "更新子模块指针 [skip ci]"
+            git push --recurse-submodules=on-demand origin HEAD
+          fi
+      - name: Set up Python 3.12.x
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.x'
+      
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Download ba.env
+        run: curl -sL -o ba.env https://raw.githubusercontent.com/asfu222/BACNLocalizationResources/refs/heads/main/ba.env
+        
+      - name: Cache AssetBundles
+        uses: actions/cache@v4
+        with:
+          path: |
+            AssetBundles/
+          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
+          restore-keys: |
+            ${{ runner.os }}-baenv-
+      - name: Download AssetBundles from server
+        run: |
+          baad download --androidassets --iosassets --output AssetBundles
+          baad download --androidassets --iosassets --output AssetBundles
+          baad download --androidassets --iosassets --output AssetBundles # In case of failure in one of the attempts, try multiple times
+      - name: Update AssetBundles
+        env:
+          TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
+        run: |
+          git clone "$TARGET_REPO_URL" commonpng
+          python main.py
+          cd commonpng
+          git add .
+          if git diff --cached --quiet; then
+            echo "贴图已是最新状态"
+          else
+            git commit -m "更新贴图包"
+            git push origin
