@@ -53,7 +53,7 @@ def pad_to_multiple_of_4(img):
     new_height = (img.height + 3) // 4 * 4
     return ImageOps.pad(img, (new_width, new_height), method=Image.Resampling.NEAREST, color=(0, 0, 0, 0))
 
-def set_astc_data(texture, img, block_width, block_height, texture_format):'
+def set_astc_data(texture, img, block_width, block_height, texture_format):
     img = ImageOps.flip(img)
     context = astc_contexts[(block_width, block_height)]
     image = ASTCImage(ASTCType.U8, img.width, img.height, data=img.tobytes())
