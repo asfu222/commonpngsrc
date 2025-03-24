@@ -47,22 +47,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-     # - name: Download ba.env
-     #   run: curl -sL -o ba.env https://raw.githubusercontent.com/asfu222/BACNLocalizationResources/refs/heads/main/ba.env
+      - name: Download ba.env
+        run: curl -sL -o ba.env https://raw.githubusercontent.com/asfu222/BACNLocalizationResources/refs/heads/main/ba.env
         
-     # - name: Cache AssetBundles
-     #   id: cache
-     #   uses: actions/cache@v4
-     #   with:
-     #     path: |
-     #       AssetBundles/
-     #     key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}-${{ hashFiles('download.sh') }}
-     #     restore-keys: |
-     #       ${{ runner.os }}-baenv-
-     # - name: Download AssetBundles from server
-     #   run: |
-     #     chmod +x ./download.sh
-     #     ./download.sh
+      - name: Cache AssetBundles
+        #id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            AssetBundles/
+          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}-${{ hashFiles('download.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-baenv-
+      - name: Download AssetBundles from server
+        run: |
+          chmod +x ./download.sh
+          ./download.sh
       - name: Update AssetBundles
         #continue-on-error: true
         env:
