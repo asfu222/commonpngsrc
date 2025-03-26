@@ -18,8 +18,8 @@ IOS_OUT = Path("commonpng/latest/iOS")
 ASSETS_IN = Path("commonpngassets")
 ANDROID_IN = Path("AssetBundles/AndroidAssetBundles")
 IOS_IN = Path("AssetBundles/iOSAssetBundles")
-ANDROID_OUT.mkdir(exist_ok=True)
-IOS_OUT.mkdir(exist_ok=True)
+ANDROID_OUT.mkdir(parents=True,exist_ok=True)
+IOS_OUT.mkdir(parents=True,exist_ok=True)
 modded_assets = {filepath.stem.lower():filepath for filepath in ASSETS_IN.rglob("*") if filepath.is_file()}
 def pad_to_multiple_of_4(img):
     new_width = (img.width + 3) // 4 * 4
