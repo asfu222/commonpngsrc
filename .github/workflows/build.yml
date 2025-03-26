@@ -69,6 +69,7 @@ jobs:
           TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
         run: |
           git clone "$TARGET_REPO_URL" commonpng
+          rm commonpng/*
           python main.py
           cd commonpng
           git add .
