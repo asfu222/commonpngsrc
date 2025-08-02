@@ -66,7 +66,7 @@ jobs:
             done
           done
 
-      - name: Update Target Repo
+      - name: Clone Target
         env:
           TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
         run: |
@@ -74,7 +74,12 @@ jobs:
           pip install -r requirements.txt
           git clone "$TARGET_REPO_URL" commonpng
           rm -rf commonpng/*
-          python main.py
+  
+      - name: Mod
+        run: python main.py
+      - name: Finish up
+        run: |
+          python lfs.py split commonpng
           cd commonpng
           git add .
           if git diff --cached --quiet; then
