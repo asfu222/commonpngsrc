@@ -55,9 +55,10 @@ jobs:
           key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
       
       - name: Update AssetBundles if needed
-        if: !steps.cache.outputs.cache-hit
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          baad download japan --androidassets --iosassets --output AssetBundles
+          chmod +x ./baad
+          ./baad download japan --android-assets --ios-assets --output AssetBundles
           for dir in AndroidAssetBundles iOSAssetBundles; do
             for zip in AssetBundles/$dir/*.zip; do
               unzip -o "$zip" -d "AssetBundles/$dir"
