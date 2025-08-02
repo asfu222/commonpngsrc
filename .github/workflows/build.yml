@@ -37,11 +37,7 @@ jobs:
             git commit -m "更新子模块指针 [skip ci]"
             git push --recurse-submodules=on-demand origin HEAD
           fi
-      - name: Set up Python 3.12.x
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.x'
-      
+
       - name: Install requirements
         run: |
           python -m pip install --upgrade pip
@@ -49,25 +45,32 @@ jobs:
           
       - name: Download ba.env
         run: curl -sL -o ba.env https://raw.githubusercontent.com/asfu222/BACNLocalizationResources/refs/heads/main/ba.env
-        
+
       - name: Cache AssetBundles
-        #id: cache
+        id: cache
         uses: actions/cache@v4
         with:
           path: |
             AssetBundles/
-          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}-${{ hashFiles('download.sh') }}
-          restore-keys: |
-            ${{ runner.os }}-baenv-
-      - name: Download AssetBundles from server
+          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
+      
+      - name: Update AssetBundles if needed
+        if: !steps.cache.outputs.cache-hit
         run: |
-          chmod +x ./download.sh
-          ./download.sh
-      - name: Update AssetBundles
-        #continue-on-error: true
+          baad download japan --androidassets --iosassets --output AssetBundles
+          for dir in AndroidAssetBundles iOSAssetBundles; do
+            for zip in AssetBundles/$dir/*.zip; do
+              unzip -o "$zip" -d "AssetBundles/$dir"
+              rm -f "$zip"
+            done
+          done
+
+      - name: Update Target Repo
         env:
           TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
         run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
           git clone "$TARGET_REPO_URL" commonpng
           rm -rf commonpng/*
           python main.py
@@ -77,16 +80,5 @@ jobs:
             echo "贴图已是最新状态"
           else
             git commit -m "更新贴图包"
-            git push origin
-          fi
-      - name: Update filter config
-        run: |
-          git add filter-config.json
-          git status
-          if git diff --cached --quiet; then
-            echo "没有检测到更新，跳过提交"
-          else
-            echo "检测到筛选设置更新，正在更新..."
-            git commit -m "更新筛选设置 [skip ci]"
             git push origin
           fi

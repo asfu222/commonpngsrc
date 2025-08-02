@@ -13,8 +13,8 @@ from astc_encoder import (
 )
 from UnityPy.enums import TextureFormat
 types = ['Texture2D']
-ANDROID_OUT = Path("commonpng/latest/Android")
-IOS_OUT = Path("commonpng/latest/iOS")
+ANDROID_OUT = Path("commonpng/latest/Android_PatchPack")
+IOS_OUT = Path("commonpng/latest/iOS_PatchPack")
 ASSETS_IN = Path("commonpngassets")
 ANDROID_IN = Path("AssetBundles/AndroidAssetBundles")
 IOS_IN = Path("AssetBundles/iOSAssetBundles")
