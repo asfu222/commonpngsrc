@@ -29,6 +29,8 @@ def applyMod(input_path: Path, output_path: Path) -> None:
     used_paths = []
     for file in input_path.glob("*.bundle"):
         filename = file.name
+        if not any(ext in filename for ext in ["textures", "mx-addressableasset-uis"]):
+          continue
         print(f"Reading file {filename}")
         fpath = os.path.join(input_path, filename)
         env = UnityPy.load(fpath)
