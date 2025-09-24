@@ -69,6 +69,11 @@ jobs:
       - name: Prune unnecessary files
         run: |
           find AssetBundles -type f ! -name "*textures*.bundle" ! -name "*mx-addressableassets-uis*.bundle" -delete
+          find AssetBundles -type f -name "*mx-spine*.bundle" -delete
+          find AssetBundles -type f -name "*mx-npcs*.bundle" -delete
+          find AssetBundles -type f -name "*mx-obstacles*.bundle" -delete
+          find AssetBundles -type f -name "*mx-cafe*.bundle" -delete
+          find AssetBundles -type f -name "*mx-characters*.bundle" -delete
 
       - name: Clone Target
         env:
