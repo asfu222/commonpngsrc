@@ -66,8 +66,11 @@ jobs:
             done
           done
 
+      - name: Prune unnecessary files
+        run: |
+          find AssetBundles -type f ! -name "*textures*.bundle" ! -name "*mx-addressableassets-uis*.bundle" -delete
+
       - name: Save AssetBundles Cache
-        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: |
