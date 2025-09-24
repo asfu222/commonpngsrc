@@ -30,8 +30,6 @@ def applyMod(input_path: Path, output_path: Path) -> None:
     for file in input_path.glob("*.bundle"):
         filename = file.name
         print(f"Reading file {filename}")
-        if not any(ext in filename for ext in ["png_asset", "psd_asset", "tga_asset"]):
-         continue
         fpath = os.path.join(input_path, filename)
         env = UnityPy.load(fpath)
         has_modded = False
