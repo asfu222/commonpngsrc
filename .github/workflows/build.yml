@@ -66,13 +66,21 @@ jobs:
             done
           done
 
+      - name: Save AssetBundles Cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            AssetBundles/
+          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
+
       - name: Clone Target
         env:
           TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          git clone "$TARGET_REPO_URL" commonpng
+          git clone --depth 1 "$TARGET_REPO_URL" commonpng
           rm -rf commonpng/*
   
       - name: Mod

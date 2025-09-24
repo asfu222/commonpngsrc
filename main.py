@@ -28,6 +28,9 @@ def pad_to_multiple_of_4(img):
 def applyMod(input_path: Path, output_path: Path) -> None:
     used_paths = []
     for filename in os.listdir(input_path):
+        if not any(ext in filename for ext in ["png_asset", "psd_asset", "tga_asset"]):
+         continue
+        print(f"Reading file {filename}")
         fpath = os.path.join(input_path, filename)
         env = UnityPy.load(fpath)
         has_modded = False
