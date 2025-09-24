@@ -27,7 +27,8 @@ def pad_to_multiple_of_4(img):
     return ImageOps.pad(img, (new_width, new_height), method=Image.Resampling.NEAREST, color=(0, 0, 0, 0))
 def applyMod(input_path: Path, output_path: Path) -> None:
     used_paths = []
-    for filename in input_path.glob("*.bundle"):
+    for file in input_path.glob("*.bundle"):
+        filename = file.name
         print(f"Reading file {filename}")
         if not any(ext in filename for ext in ["png_asset", "psd_asset", "tga_asset"]):
          continue
