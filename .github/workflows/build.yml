@@ -70,13 +70,6 @@ jobs:
         run: |
           find AssetBundles -type f ! -name "*textures*.bundle" ! -name "*mx-addressableassets-uis*.bundle" -delete
 
-      - name: Save AssetBundles Cache
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            AssetBundles/
-          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
-
       - name: Clone Target
         env:
           TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
