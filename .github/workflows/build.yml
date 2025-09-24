@@ -81,14 +81,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          git clone --depth 1 "$TARGET_REPO_URL" commonpng
-          rm -rf commonpng/*
+          git clone --depth 1 --filter=tree:0 --no-checkout "$TARGET_REPO_URL" commonpng
   
       - name: Mod
         run: python main.py
+  
       - name: Finish up
         run: |
-          python lfs.py split commonpng
+          python lfs.py split commonpng/Android_PatchPack
+          python lfs.py split commonpng/iOS_PatchPack
           cd commonpng
           git add .
           if git diff --cached --quiet; then
