@@ -22,15 +22,12 @@ def pad_to_multiple_of_4(img):
     return ImageOps.pad(img, (new_width, new_height), method=Image.Resampling.NEAREST, color=(0, 0, 0, 0))
 
 def process_file(file_info):
-    file, input_path, output_path, modded_assets = file_info
+    file, output_path = file_info
     filename = file.name
-    fpath = os.path.join(input_path, filename)
     
-    try:
-        env = UnityPy.load(fpath)
-    except Exception as e:
-        print(f"Error reading file {filename}: {e}")
-        return
+    print(f"Reading {file}")
+    
+    env = UnityPy.load(str(file))
 
     has_modded = False
     for obj in env.objects:
@@ -49,9 +46,9 @@ def process_file(file_info):
             f.write(env.file.save(packer="original"))
 
 def applyMods_parallel(input_path: Path, output_path: Path) -> None:
-    file_list = [file for file in input_path.glob("*.bundle") if any(ext in file.name for ext in ["textures", "mx-addressableasset-uis"])]
+    file_list = [file for file in input_path.rglob("*.bundle") if any(ext in file.name for ext in ["textures", "mx-addressableasset-uis"])]
     
-    tasks = [(file, input_path, output_path, modded_assets) for file in file_list]
+    tasks = [(file, output_path) for file in file_list]
     
     with Pool(os.cpu_count()) as p:
         p.map(process_file, tasks)

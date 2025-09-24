@@ -45,6 +45,8 @@ def split_recursive(directory: str):
 
     #print(f"Scanning directory recursively for files > 25MB in {directory}...")
     for file_path in path_obj.rglob('*'):
+        if ".git" in file_path.parts:
+            continue
         if file_path.is_file():
             split_file(file_path)
 
@@ -59,6 +61,8 @@ def join_files_recursive(directory: str):
     parts_dict = defaultdict(list)  # base filename -> list of part files
 
     for part_file in path_obj.rglob('*.part[0-9][0-9][0-9]'):
+        if ".git" in part_file.parts:
+            continue
         # Extract base filename by stripping .partNNN suffix
         base_name = part_file.name.rsplit('.part', 1)[0]
         base_path = part_file.parent / base_name

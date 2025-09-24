@@ -6,15 +6,13 @@ on:
   repository_dispatch:
     types: [update-assets]
 jobs:
-  update:
+  prepare:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          token: ${{ secrets.ASSET_REPO_TOKEN }}
+
       - name: Configure Submodules to Track Branches
         run: |
           git submodule foreach '
@@ -37,11 +35,6 @@ jobs:
             git commit -m "更新子模块指针 [skip ci]"
             git push --recurse-submodules=on-demand origin HEAD
           fi
-
-      - name: Install requirements
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
           
       - name: Download ba.env
         run: curl -sL -o ba.env https://raw.githubusercontent.com/asfu222/BACNLocalizationResources/refs/heads/main/ba.env
@@ -75,17 +68,105 @@ jobs:
           find AssetBundles -type f -name "*mx-cafe*.bundle" -delete
           find AssetBundles -type f -name "*mx-characters*.bundle" -delete
 
+      - name: Save cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            AssetBundles/
+          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
+
+      - name: Split into subfolders
+        run: python3 split_into_subfolders.py
+        
+      - name: Upload chunk 0
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-0
+          path: |
+            AssetBundles/AndroidAssetBundles/0
+            AssetBundles/iOSAssetBundles/0
+
+      - name: Upload chunk 1
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-1
+          path: |
+            AssetBundles/AndroidAssetBundles/1
+            AssetBundles/iOSAssetBundles/1
+
+      - name: Upload chunk 2
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-2
+          path: |
+            AssetBundles/AndroidAssetBundles/2
+            AssetBundles/iOSAssetBundles/2
+      - name: Upload chunk 3
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-3
+          path: |
+            AssetBundles/AndroidAssetBundles/3
+            AssetBundles/iOSAssetBundles/3
+  mod:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chunk: [0,1,2,3]
+    steps: 
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.ASSET_REPO_TOKEN }}
+
+      - name: Download chunk
+        uses: actions/download-artifact@v4
+        with:
+          name: bundle-${{ matrix.chunk }}
+          path: |
+            AssetBundles/AndroidAssetBundles/${{ matrix.chunk }}
+            AssetBundles/iOSAssetBundles/${{ matrix.chunk }}
+
+      - name: Mod
+        run: |
+          pip install -r requirements.txt
+          python main.py
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mod-${{ matrix.chunk }}
+          path: commonpng
+
+  merge:
+    needs: mod
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Clone Target
         env:
           TARGET_REPO_URL: https://x-access-token:${{ secrets.COMMON_PNG_REPO }}@github.com/asfu222/commonpng.git
         run: |
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
           git clone --depth 1 --filter=tree:0 --no-checkout "$TARGET_REPO_URL" commonpng
-  
-      - name: Mod
-        run: python main.py
-  
+
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: mod-*
+          path: commonpng
+
+      - name: Setup git identity
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Finish up
         run: |
           python lfs.py split commonpng/Android_PatchPack
