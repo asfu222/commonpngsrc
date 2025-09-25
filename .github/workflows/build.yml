@@ -120,6 +120,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bundle-${{ matrix.chunk }}
+          path: AssetBundles
 
       - name: Mod
         run: |
