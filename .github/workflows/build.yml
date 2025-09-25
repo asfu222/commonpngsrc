@@ -158,6 +158,7 @@ jobs:
         with:
           pattern: mod-*
           path: commonpng
+          merge-multiple: true
 
       - name: Setup git identity
         run: |
@@ -166,8 +167,7 @@ jobs:
 
       - name: Finish up
         run: |
-          python lfs.py split commonpng/Android_PatchPack
-          python lfs.py split commonpng/iOS_PatchPack
+          python lfs.py split commonpng
           cd commonpng
           git add .
           if git diff --cached --quiet; then
