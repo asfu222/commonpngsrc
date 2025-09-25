@@ -1,13 +1,16 @@
 from pathlib import Path
 import shutil
 import argparse
+import random
 
 def split_by_size(input_dir: Path, chunks: int):
     """
     Splits files in input_dir into 'chunks' subfolders so total size per chunk is roughly balanced.
     """
     input_dir = Path(input_dir)
-    files = sorted([f for f in input_dir.glob("*") if f.is_file()], key=lambda f: f.stat().st_size, reverse=True)
+    files = [f for f in input_dir.glob("*") if f.is_file()]
+
+    random.shuffle(files)
     
     # Initialize chunk folders
     chunk_paths = [input_dir / str(i) for i in range(chunks)]
