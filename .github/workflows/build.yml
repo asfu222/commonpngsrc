@@ -67,16 +67,10 @@ jobs:
           find AssetBundles -type f -name "*mx-obstacles*.bundle" -delete
           find AssetBundles -type f -name "*mx-cafe*.bundle" -delete
           find AssetBundles -type f -name "*mx-characters*.bundle" -delete
-
-      - name: Save cache
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            AssetBundles/
-          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
+          find AssetBundles -type f ! -name "*uis*.bundle" -delete
 
       - name: Split into subfolders
+        if: steps.cache.outputs.cache-hit != 'true'
         run: python3 split_into_subfolders.py
         
       - name: Upload chunk 0
