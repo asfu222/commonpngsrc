@@ -71,7 +71,7 @@ jobs:
 
       - name: Split into subfolders
         if: steps.cache.outputs.cache-hit != 'true'
-        run: python3 split_into_subfolders.py
+        run: python3 split_into_subfolders.py --chunks 8
         
       - name: Upload chunk 0
         uses: actions/upload-artifact@v4
@@ -96,6 +96,7 @@ jobs:
           path: |
             AssetBundles/AndroidAssetBundles/2
             AssetBundles/iOSAssetBundles/2
+
       - name: Upload chunk 3
         uses: actions/upload-artifact@v4
         with:
@@ -103,12 +104,44 @@ jobs:
           path: |
             AssetBundles/AndroidAssetBundles/3
             AssetBundles/iOSAssetBundles/3
+    
+      - name: Upload chunk 4
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-4
+          path: |
+            AssetBundles/AndroidAssetBundles/4
+            AssetBundles/iOSAssetBundles/4
+
+      - name: Upload chunk 5
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-5
+          path: |
+            AssetBundles/AndroidAssetBundles/5
+            AssetBundles/iOSAssetBundles/5
+
+      - name: Upload chunk 6
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-6
+          path: |
+            AssetBundles/AndroidAssetBundles/6
+            AssetBundles/iOSAssetBundles/6
+    
+      - name: Upload chunk 7
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-7
+          path: |
+            AssetBundles/AndroidAssetBundles/7
+            AssetBundles/iOSAssetBundles/7
   mod:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        chunk: [0,1,2,3]
+        chunk: [0,1,2,3,4,5,6,7]
     steps: 
       - name: Checkout Repository
         uses: actions/checkout@v4
