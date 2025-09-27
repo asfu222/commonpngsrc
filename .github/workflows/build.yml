@@ -38,14 +38,6 @@ jobs:
           
       - name: Download ba.env
         run: curl -sL -o ba.env https://raw.githubusercontent.com/asfu222/BACNLocalizationResources/refs/heads/main/ba.env
-
-      - name: Cache AssetBundles
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            AssetBundles/
-          key: ${{ runner.os }}-baenv-${{ hashFiles('ba.env') }}
       
       - name: Update AssetBundles if needed
         if: steps.cache.outputs.cache-hit != 'true'
@@ -58,16 +50,6 @@ jobs:
               rm -f "$zip"
             done
           done
-
-      - name: Prune unnecessary files
-        run: |
-          find AssetBundles -type f ! -name "*textures*.bundle" ! -name "*mx-addressableassets-uis*.bundle" -delete
-          find AssetBundles -type f -name "*mx-spine*.bundle" -delete
-          find AssetBundles -type f -name "*mx-npcs*.bundle" -delete
-          find AssetBundles -type f -name "*mx-obstacles*.bundle" -delete
-          find AssetBundles -type f -name "*mx-cafe*.bundle" -delete
-          find AssetBundles -type f -name "*mx-characters*.bundle" -delete
-          find AssetBundles -type f ! -name "*uis*.bundle" -delete
 
       - name: Split into subfolders
         if: steps.cache.outputs.cache-hit != 'true'
