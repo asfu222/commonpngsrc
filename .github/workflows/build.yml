@@ -42,14 +42,9 @@ jobs:
       - name: Update AssetBundles if needed
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          chmod +x ./baad
-          ./baad download japan --android-assets --ios-assets --output AssetBundles
-          for dir in AndroidAssetBundles iOSAssetBundles; do
-            for zip in AssetBundles/$dir/*.zip; do
-              unzip -o "$zip" -d "AssetBundles/$dir"
-              rm -f "$zip"
-            done
-          done
+          source ba.env
+          chmod +x ./commonpng-downloader
+          ./commonpng-downloader -c "$ADDRESSABLE_CATALOG_URL"
 
       - name: Split into subfolders
         if: steps.cache.outputs.cache-hit != 'true'
@@ -60,64 +55,64 @@ jobs:
         with:
           name: bundle-0
           path: |
-            AssetBundles/AndroidAssetBundles/0
-            AssetBundles/iOSAssetBundles/0
+            Android/AssetBundles/0
+            iOS/AssetBundles/0
 
       - name: Upload chunk 1
         uses: actions/upload-artifact@v4
         with:
           name: bundle-1
           path: |
-            AssetBundles/AndroidAssetBundles/1
-            AssetBundles/iOSAssetBundles/1
+            Android/AssetBundles/1
+            iOS/AssetBundles/1
 
       - name: Upload chunk 2
         uses: actions/upload-artifact@v4
         with:
           name: bundle-2
           path: |
-            AssetBundles/AndroidAssetBundles/2
-            AssetBundles/iOSAssetBundles/2
+            Android/AssetBundles/2
+            iOS/AssetBundles/2
 
       - name: Upload chunk 3
         uses: actions/upload-artifact@v4
         with:
           name: bundle-3
           path: |
-            AssetBundles/AndroidAssetBundles/3
-            AssetBundles/iOSAssetBundles/3
+            Android/AssetBundles/3
+            iOS/AssetBundles/3
     
       - name: Upload chunk 4
         uses: actions/upload-artifact@v4
         with:
           name: bundle-4
           path: |
-            AssetBundles/AndroidAssetBundles/4
-            AssetBundles/iOSAssetBundles/4
+            Android/AssetBundles/4
+            iOS/AssetBundles/4
 
       - name: Upload chunk 5
         uses: actions/upload-artifact@v4
         with:
           name: bundle-5
           path: |
-            AssetBundles/AndroidAssetBundles/5
-            AssetBundles/iOSAssetBundles/5
+            Android/AssetBundles/5
+            iOS/AssetBundles/5
 
       - name: Upload chunk 6
         uses: actions/upload-artifact@v4
         with:
           name: bundle-6
           path: |
-            AssetBundles/AndroidAssetBundles/6
-            AssetBundles/iOSAssetBundles/6
+            Android/AssetBundles/6
+            iOS/AssetBundles/6
     
       - name: Upload chunk 7
         uses: actions/upload-artifact@v4
         with:
           name: bundle-7
           path: |
-            AssetBundles/AndroidAssetBundles/7
-            AssetBundles/iOSAssetBundles/7
+            Android/AssetBundles/7
+            iOS/AssetBundles/7
   mod:
     needs: prepare
     runs-on: ubuntu-latest
@@ -135,7 +130,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bundle-${{ matrix.chunk }}
-          path: AssetBundles
 
       - name: Mod
         run: |

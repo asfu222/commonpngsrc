@@ -10,8 +10,8 @@ types = ['Texture2D']
 ANDROID_OUT = Path("commonpng/latest/Android_PatchPack")
 IOS_OUT = Path("commonpng/latest/iOS_PatchPack")
 ASSETS_IN = Path("commonpngassets")
-ANDROID_IN = Path("AssetBundles/AndroidAssetBundles")
-IOS_IN = Path("AssetBundles/iOSAssetBundles")
+ANDROID_IN = Path("Android/AssetBundles")
+IOS_IN = Path("iOS/AssetBundles")
 ANDROID_OUT.mkdir(parents=True, exist_ok=True)
 IOS_OUT.mkdir(parents=True, exist_ok=True)
 modded_assets = {filepath.stem.lower(): filepath for filepath in ASSETS_IN.rglob("*") if filepath.is_file()}
