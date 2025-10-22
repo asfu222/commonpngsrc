@@ -33,8 +33,8 @@ def split_by_size(input_dir: Path, chunks: int):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--android_in", type=str, default="AssetBundles/AndroidAssetBundles")
-    parser.add_argument("--ios_in", type=str, default="AssetBundles/iOSAssetBundles")
+    parser.add_argument("--android_in", type=str, default="Android/AssetBundles")
+    parser.add_argument("--ios_in", type=str, default="iOS/AssetBundles")
     parser.add_argument("--chunks", type=int, default=4)
     args = parser.parse_args()
 
