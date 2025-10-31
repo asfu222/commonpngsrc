@@ -1,1 +1,1 @@
-UnityPy
+git+https://github.com/asfu222/UnityPy.git@master
