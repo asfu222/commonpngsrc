@@ -130,7 +130,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bundle-${{ matrix.chunk }}
-
+      - uses: actions/setup-python@v6
+        with:
+         python-version: '3.13' 
       - name: Mod
         run: |
           pip install -r requirements.txt
